@@ -1,0 +1,28 @@
+{
+  "project": "the-notch-bar",
+  "change": "phase-1-hidden-icons",
+  "currentStage": "QA",
+  "stages": {
+    "CONTEXT": { "status": "complete", "completedAt": "2026-04-11T10:00:00Z" },
+    "SPEC": { "status": "complete", "startedAt": "2026-04-11T10:00:00Z", "completedAt": "2026-04-11T11:00:00Z" },
+    "SPEC_REVIEW": { "status": "complete", "verdict": "APPROVED_WITH_NOTES", "completedAt": "2026-04-11T11:30:00Z" },
+    "BUILD": { "status": "complete", "completedAt": "2026-04-11T12:00:00Z" },
+    "CODE_AUDIT": { "status": "complete", "verdict": "PASS_WITH_NOTES", "healthScore": 85, "completedAt": "2026-04-11T12:30:00Z" },
+    "QA": { "status": "awaiting_manual_test" },
+    "SHIP": { "status": "pending" }
+  },
+  "gates": {
+    "SPEC_REVIEW": "APPROVED_WITH_NOTES",
+    "CODE_AUDIT": "PASS_WITH_NOTES",
+    "QA": null,
+    "SHIP": null
+  },
+  "overrides": [],
+  "memoryCheckpoints": [
+    { "stage": "CONTEXT", "note": "Fork created, build verified, architecture mapped, original specs reviewed" },
+    { "stage": "SPEC", "note": "6 artifacts written: proposal, design, 3 specs, tasks" },
+    { "stage": "SPEC_REVIEW", "note": "APPROVED_WITH_NOTES. 4 critical issues fixed in specs" },
+    { "stage": "BUILD", "note": "All 8 tasks implemented. 4 new files, 5 modified. Build succeeds." },
+    { "stage": "CODE_AUDIT", "note": "PASS_WITH_NOTES 85/100. Fixed: stale item check, hideOnClosed guard, transition animations. CF force casts documented as safe." }
+  ]
+}
