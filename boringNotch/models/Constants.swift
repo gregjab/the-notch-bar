@@ -39,6 +39,7 @@ enum HideNotchOption: String, Defaults.Serializable {
 // Define notification names at file scope
 extension Notification.Name {
     static let mediaControllerChanged = Notification.Name("mediaControllerChanged")
+    static let hiddenMenuBarIconsSettingChanged = Notification.Name("hiddenMenuBarIconsSettingChanged")
 }
 
 // Media controller types for selection in settings
@@ -183,6 +184,9 @@ extension Defaults.Keys {
     // MARK: Media Controller
     static let mediaController = Key<MediaControllerType>("mediaController", default: defaultMediaController)
     
+    // MARK: Hidden Menu Bar Icons
+    static let showHiddenMenuBarIcons = Key<Bool>("showHiddenMenuBarIcons", default: true)
+
     // MARK: Advanced Settings
     static let useCustomAccentColor = Key<Bool>("useCustomAccentColor", default: false)
     static let customAccentColorData = Key<Data?>("customAccentColorData", default: nil)

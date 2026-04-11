@@ -75,6 +75,11 @@ struct ContentView: View {
             && !vm.hideOnClosed
         {
             chinWidth += (2 * max(0, vm.effectiveClosedNotchHeight - 12) + 20)
+        } else if !coordinator.expandingView.show && vm.notchState == .closed
+            && !vm.hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons]
+            && !vm.hideOnClosed
+        {
+            chinWidth += CGFloat(min(vm.hiddenIconItems.count, 8)) * (max(0, vm.effectiveClosedNotchHeight - 8) + 2)
         }
 
         return chinWidth
@@ -147,13 +152,13 @@ struct ContentView: View {
                             }
                     }
                     .onReceive(NotificationCenter.default.publisher(for: .sharingDidFinish)) { _ in
-                        if vm.notchState == .open && !isHovering && !vm.isBatteryPopoverActive {
+                        if vm.notchState == .open && !isHovering && !vm.isBatteryPopoverActive && !ClickForwardingManager.shared.isDropdownActive {
                             hoverTask?.cancel()
                             hoverTask = Task {
                                 try? await Task.sleep(for: .milliseconds(100))
                                 guard !Task.isCancelled else { return }
                                 await MainActor.run {
-                                    if self.vm.notchState == .open && !self.isHovering && !self.vm.isBatteryPopoverActive && !SharingStateManager.shared.preventNotchClose {
+                                    if self.vm.notchState == .open && !self.isHovering && !self.vm.isBatteryPopoverActive && !SharingStateManager.shared.preventNotchClose && !ClickForwardingManager.shared.isDropdownActive {
                                         self.vm.close()
                                     }
                                 }
@@ -168,13 +173,13 @@ struct ContentView: View {
                         }
                     }
                     .onChange(of: vm.isBatteryPopoverActive) {
-                        if !vm.isBatteryPopoverActive && !isHovering && vm.notchState == .open && !SharingStateManager.shared.preventNotchClose {
+                        if !vm.isBatteryPopoverActive && !isHovering && vm.notchState == .open && !SharingStateManager.shared.preventNotchClose && !ClickForwardingManager.shared.isDropdownActive {
                             hoverTask?.cancel()
                             hoverTask = Task {
                                 try? await Task.sleep(for: .milliseconds(100))
                                 guard !Task.isCancelled else { return }
                                 await MainActor.run {
-                                    if !self.vm.isBatteryPopoverActive && !self.isHovering && self.vm.notchState == .open && !SharingStateManager.shared.preventNotchClose {
+                                    if !self.vm.isBatteryPopoverActive && !self.isHovering && self.vm.notchState == .open && !SharingStateManager.shared.preventNotchClose && !ClickForwardingManager.shared.isDropdownActive {
                                         self.vm.close()
                                     }
                                 }
@@ -293,9 +298,28 @@ struct ContentView: View {
                       } else if !coordinator.expandingView.show && vm.notchState == .closed && (!musicManager.isPlaying && musicManager.isPlayerIdle) && Defaults[.showNotHumanFace] && !vm.hideOnClosed  {
                           BoringFaceAnimation()
                        } else if vm.notchState == .open {
+                           if !vm.hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons] {
+                               HiddenIconRow(
+                                   items: vm.hiddenIconItems,
+                                   onItemClick: { item in
+                                       ClickForwardingManager.shared.performClick(on: item)
+                                   }
+                               )
+                               .frame(height: 28)
+                               .environmentObject(vm)
+                           }
                            BoringHeader()
                                .frame(height: max(24, vm.effectiveClosedNotchHeight))
                                .opacity(gestureProgress != 0 ? 1.0 - min(abs(gestureProgress) * 0.1, 0.3) : 1.0)
+                       } else if !vm.hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons] {
+                           HiddenIconRow(
+                               items: vm.hiddenIconItems,
+                               onItemClick: { item in
+                                   ClickForwardingManager.shared.performClick(on: item)
+                               }
+                           )
+                           .frame(height: vm.effectiveClosedNotchHeight)
+                           .environmentObject(vm)
                        } else {
                            Rectangle().fill(.clear).frame(width: vm.closedNotchSize.width - 20, height: vm.effectiveClosedNotchHeight)
                        }
@@ -549,7 +573,7 @@ struct ContentView: View {
                         self.isHovering = false
                     }
                     
-                    if self.vm.notchState == .open && !self.vm.isBatteryPopoverActive && !SharingStateManager.shared.preventNotchClose {
+                    if self.vm.notchState == .open && !self.vm.isBatteryPopoverActive && !SharingStateManager.shared.preventNotchClose && !ClickForwardingManager.shared.isDropdownActive {
                         self.vm.close()
                     }
                 }

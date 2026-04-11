@@ -147,7 +147,8 @@ struct GeneralSettings: View {
     @Default(.automaticallySwitchDisplay) var automaticallySwitchDisplay
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
-    
+    @Default(.showHiddenMenuBarIcons) var showHiddenMenuBarIcons
+
 
     var body: some View {
         Form {
@@ -190,6 +191,23 @@ struct GeneralSettings: View {
                     .disabled(showOnAllDisplays)
             } header: {
                 Text("System features")
+            }
+
+            Section {
+                Defaults.Toggle(key: .showHiddenMenuBarIcons) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Show hidden menu bar icons")
+                        Text("Display menu bar icons hidden behind the notch. Requires Accessibility permission.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .tint(.effectiveAccent)
+                .onChange(of: showHiddenMenuBarIcons) { _, _ in
+                    NotificationCenter.default.post(name: .hiddenMenuBarIconsSettingChanged, object: nil)
+                }
+            } header: {
+                Text("Hidden menu bar icons")
             }
 
             Section {

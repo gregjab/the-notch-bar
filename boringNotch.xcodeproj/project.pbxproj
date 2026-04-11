@@ -143,6 +143,10 @@
 		B1F747F92EC7E94000F841DB /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F747F82EC7E94000F841DB /* LottieView.swift */; };
 		B1FEB4992C7686630066EBBC /* PanGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FEB4982C7686630066EBBC /* PanGesture.swift */; };
 		F38DE6482D8243E7008B5C6D /* BatteryActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */; };
+		AA000001PHASE1HIDDEN0001 /* HiddenMenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002PHASE1HIDDEN0001 /* HiddenMenuBarItem.swift */; };
+		AA000001PHASE1HIDDEN0002 /* MenuBarItemDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002PHASE1HIDDEN0002 /* MenuBarItemDetector.swift */; };
+		AA000001PHASE1HIDDEN0003 /* ClickForwardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002PHASE1HIDDEN0003 /* ClickForwardingManager.swift */; };
+		AA000001PHASE1HIDDEN0004 /* HiddenIconRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002PHASE1HIDDEN0004 /* HiddenIconRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,6 +313,10 @@
 		B1F747F82EC7E94000F841DB /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B1FEB4982C7686630066EBBC /* PanGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanGesture.swift; sourceTree = "<group>"; };
 		F38DE6472D8243E2008B5C6D /* BatteryActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryActivityManager.swift; sourceTree = "<group>"; };
+		AA000002PHASE1HIDDEN0001 /* HiddenMenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenMenuBarItem.swift; sourceTree = "<group>"; };
+		AA000002PHASE1HIDDEN0002 /* MenuBarItemDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemDetector.swift; sourceTree = "<group>"; };
+		AA000002PHASE1HIDDEN0003 /* ClickForwardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickForwardingManager.swift; sourceTree = "<group>"; };
+		AA000002PHASE1HIDDEN0004 /* HiddenIconRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenIconRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -518,6 +526,8 @@
 				14C08BB52C8DE42D000F8AA0 /* CalendarManager.swift */,
 				B1F0A0012E60000100000001 /* BrightnessManager.swift */,
 				59D8C23B2E589FAA00147B33 /* VolumeManager.swift */,
+				AA000002PHASE1HIDDEN0002 /* MenuBarItemDetector.swift */,
+				AA000002PHASE1HIDDEN0003 /* ClickForwardingManager.swift */,
 			);
 			path = managers;
 			sourceTree = "<group>";
@@ -634,6 +644,7 @@
 				14D570C82C5F38890011E668 /* BoringViewModel.swift */,
 				14D570CA2C5F4B2C0011E668 /* BatteryStatusViewModel.swift */,
 				1153BD902D986DB300979FB0 /* PlaybackState.swift */,
+				AA000002PHASE1HIDDEN0001 /* HiddenMenuBarItem.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -710,6 +721,7 @@
 				14D570C52C5F38210011E668 /* BoringHeader.swift */,
 				14D570D12C5F6C6A0011E668 /* BoringExtrasMenu.swift */,
 				1471A8582C6281BD0058408D /* BoringNotchWindow.swift */,
+				AA000002PHASE1HIDDEN0004 /* HiddenIconRow.swift */,
 			);
 			path = Notch;
 			sourceTree = "<group>";
@@ -1020,6 +1032,10 @@
 				1100290C2E847E2800035A57 /* NSItemProvider+LoadHelpers.swift in Sources */,
 				11CFC6632E09918400748C80 /* MusicControllerSelectionView.swift in Sources */,
 				B1F0A0022E60000100000001 /* BrightnessManager.swift in Sources */,
+				AA000001PHASE1HIDDEN0001 /* HiddenMenuBarItem.swift in Sources */,
+				AA000001PHASE1HIDDEN0002 /* MenuBarItemDetector.swift in Sources */,
+				AA000001PHASE1HIDDEN0003 /* ClickForwardingManager.swift in Sources */,
+				AA000001PHASE1HIDDEN0004 /* HiddenIconRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

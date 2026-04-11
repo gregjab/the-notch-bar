@@ -82,6 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             DistributedNotificationCenter.default().removeObserver(observer)
             screenUnlockedObserver = nil
         }
+        MenuBarItemDetector.shared.stopObserving()
         MusicManager.shared.destroy()
         cleanupDragDetectors()
         cleanupWindows()
@@ -334,6 +335,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name.hiddenMenuBarIconsSettingChanged, object: nil, queue: nil
+        ) { _ in
+            Task { @MainActor in
+                if Defaults[.showHiddenMenuBarIcons] {
+                    MenuBarItemDetector.shared.startObserving()
+                } else {
+                    MenuBarItemDetector.shared.stopObserving()
+                }
+            }
+        }
+
         // Use closure-based observers for DistributedNotificationCenter and keep tokens for removal
         screenLockedObserver = DistributedNotificationCenter.default().addObserver(
             forName: NSNotification.Name(rawValue: "com.apple.screenIsLocked"),
@@ -436,6 +449,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         previousScreens = NSScreen.screens
+
+        // Start hidden menu bar icon detection
+        if Defaults[.showHiddenMenuBarIcons] {
+            MenuBarItemDetector.shared.startObserving()
+        }
     }
 
     func playWelcomeSound() {

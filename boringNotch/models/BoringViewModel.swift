@@ -33,6 +33,7 @@ class BoringViewModel: NSObject, ObservableObject {
     @Published var isBatteryPopoverActive: Bool = false
 
     @Published var screenUUID: String?
+    @Published var hiddenIconItems: [HiddenMenuBarItem] = []
 
     @Published var notchSize: CGSize = getClosedNotchSize()
     @Published var closedNotchSize: CGSize = getClosedNotchSize()
@@ -67,8 +68,19 @@ class BoringViewModel: NSObject, ObservableObject {
             .store(in: &cancellables)
         
         setupDetectorObserver()
+        setupHiddenIconSubscription()
     }
     
+    private func setupHiddenIconSubscription() {
+        guard let uuid = screenUUID else { return }
+        MenuBarItemDetector.shared.$hiddenItemsByScreen
+            .map { $0[uuid] ?? [] }
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .assign(to: \.hiddenIconItems, on: self)
+            .store(in: &cancellables)
+    }
+
     private func setupDetectorObserver() {
         // Publisher for the user’s fullscreen detection setting
         let enabledPublisher = Defaults
@@ -190,18 +202,31 @@ class BoringViewModel: NSObject, ObservableObject {
     }
 
     func open() {
-        self.notchSize = openNotchSize
+        // Refresh hidden icons when panel opens
+        MenuBarItemDetector.shared.refresh()
+        MenuBarItemDetector.shared.startPeriodicRefresh()
+
+        var targetSize = openNotchSize
+        if !hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons] {
+            targetSize.height += 28
+        }
+        self.notchSize = targetSize
         self.notchState = .open
-        
+
         // Force music information update when notch is opened
         MusicManager.shared.forceUpdate()
     }
 
     func close() {
+        // Do not close while a dropdown menu from a hidden icon is active
+        if ClickForwardingManager.shared.isDropdownActive {
+            return
+        }
         // Do not close while a share picker or sharing service is active
         if SharingStateManager.shared.preventNotchClose {
             return
         }
+        MenuBarItemDetector.shared.stopPeriodicRefresh()
         self.notchSize = getClosedNotchSize(screenUUID: self.screenUUID)
         self.closedNotchSize = self.notchSize
         self.notchState = .closed
