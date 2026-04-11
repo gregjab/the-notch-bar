@@ -306,12 +306,13 @@ struct ContentView: View {
                                    }
                                )
                                .frame(height: 28)
+                               .transition(.opacity.combined(with: .move(edge: .top)))
                                .environmentObject(vm)
                            }
                            BoringHeader()
                                .frame(height: max(24, vm.effectiveClosedNotchHeight))
                                .opacity(gestureProgress != 0 ? 1.0 - min(abs(gestureProgress) * 0.1, 0.3) : 1.0)
-                       } else if !vm.hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons] {
+                       } else if !vm.hiddenIconItems.isEmpty && Defaults[.showHiddenMenuBarIcons] && !vm.hideOnClosed {
                            HiddenIconRow(
                                items: vm.hiddenIconItems,
                                onItemClick: { item in
@@ -319,6 +320,7 @@ struct ContentView: View {
                                }
                            )
                            .frame(height: vm.effectiveClosedNotchHeight)
+                           .transition(.opacity.combined(with: .move(edge: .top)))
                            .environmentObject(vm)
                        } else {
                            Rectangle().fill(.clear).frame(width: vm.closedNotchSize.width - 20, height: vm.effectiveClosedNotchHeight)

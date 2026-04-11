@@ -187,7 +187,8 @@ final class MenuBarItemDetector: ObservableObject {
                 continue
             }
 
-            let extrasMenuBarElement = extrasMenuBar as! AXUIElement
+            // CFTypeRef to AXUIElement cast always succeeds for CF types
+            let extrasMenuBarElement = extrasMenuBar as! AXUIElement  // Safe: AX API guarantees AXUIElement return type
 
             // Get children of the extras menu bar
             var childrenValue: AnyObject?
@@ -215,7 +216,8 @@ final class MenuBarItemDetector: ObservableObject {
                 }
 
                 var frame: CGRect = .zero
-                guard AXValueGetValue(frameVal as! AXValue, .cgRect, &frame) else {
+                // CFTypeRef to AXValue cast always succeeds for CF types
+                guard AXValueGetValue(frameValue as! AXValue, .cgRect, &frame) else {
                     continue
                 }
 

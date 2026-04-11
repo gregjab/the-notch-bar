@@ -32,23 +32,30 @@ final class ClickForwardingManager: ObservableObject {
         // Synchronous refresh to verify item still exists
         MenuBarItemDetector.shared.refreshImmediate()
 
+        // Look up the item by id in the refreshed list. If not found (app quit), bail.
+        guard let screenUUID = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 })?.displayUUID,
+              let freshItem = MenuBarItemDetector.shared.items(forScreen: screenUUID).first(where: { $0.id == item.id }) else {
+            logger.warning("Item \(item.id) no longer exists after refresh, skipping click")
+            return
+        }
+
         // If there's already an active dropdown, exit it first
         if isDropdownActive {
             exitDropdownActiveState()
         }
 
-        // Attempt AX press first
-        if performAXPress(on: item.element) {
-            logger.info("AXPress succeeded for \(item.appName)")
-            enterDropdownActiveState(for: item)
+        // Attempt AX press first (use the fresh element reference)
+        if performAXPress(on: freshItem.element) {
+            logger.info("AXPress succeeded for \(freshItem.appName)")
+            enterDropdownActiveState(for: freshItem)
         } else {
-            logger.warning("AXPress failed for \(item.appName), falling back to CGEvent")
+            logger.warning("AXPress failed for \(freshItem.appName), falling back to CGEvent")
             let clickPoint = CGPoint(
-                x: item.frame.midX,
-                y: item.frame.midY
+                x: freshItem.frame.midX,
+                y: freshItem.frame.midY
             )
             performCGEventClick(at: clickPoint)
-            enterDropdownActiveState(for: item)
+            enterDropdownActiveState(for: freshItem)
         }
     }
 
