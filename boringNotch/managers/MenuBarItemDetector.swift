@@ -155,19 +155,28 @@ final class MenuBarItemDetector: ObservableObject {
 
         var result: [String: [HiddenMenuBarItem]] = [:]
         for screen in NSScreen.screens {
-            guard let uuid = screen.displayUUID else { continue }
+            guard let uuid = screen.displayUUID else {
+                logger.info("classify: screen has no UUID, skipping")
+                continue
+            }
+            let deadZone = computeNotchDeadZone(for: screen)
+            logger.info("classify: screen uuid=\(uuid) insets.top=\(screen.safeAreaInsets.top) deadZone=\(String(describing: deadZone))")
             let hiddenItems = allItems.filter { classifyItem($0, screen: screen) }
             result[uuid] = hiddenItems
+            logger.info("classify: screen uuid=\(uuid) hidden=\(hiddenItems.count)/\(allItems.count)")
         }
 
         hiddenItemsByScreen = result
-        logger.debug("MenuBarItemDetector found \(allItems.count) total items; \(result.values.map(\.count).reduce(0, +)) hidden across all screens")
+        logger.info("performEnumerationAndClassification done: total=\(allItems.count) hiddenSum=\(result.values.map(\.count).reduce(0, +))")
     }
 
     private func enumerateAllMenuBarItems() -> [HiddenMenuBarItem] {
         var items: [HiddenMenuBarItem] = []
+        var appsWithExtrasBar = 0
+        var appsWithChildren = 0
 
         let runningApps = NSWorkspace.shared.runningApplications.filter { $0.isFinishedLaunching }
+        logger.info("enumerate: scanning \(runningApps.count) running apps")
 
         for app in runningApps {
             let pid = app.processIdentifier
@@ -186,6 +195,8 @@ final class MenuBarItemDetector: ObservableObject {
                 // This app does not expose an extras menu bar; skip silently.
                 continue
             }
+            appsWithExtrasBar += 1
+            logger.info("enumerate: \(app.localizedName ?? "?") has AXExtrasMenuBar")
 
             // CFTypeRef to AXUIElement cast always succeeds for CF types
             let extrasMenuBarElement = extrasMenuBar as! AXUIElement  // Safe: AX API guarantees AXUIElement return type
@@ -202,9 +213,11 @@ final class MenuBarItemDetector: ObservableObject {
                   let children = childrenValue as? [AXUIElement] else {
                 continue
             }
+            appsWithChildren += 1
 
             let bundleID = app.bundleIdentifier
             let appName = app.localizedName ?? bundleID ?? "Unknown"
+            logger.info("enumerate: \(appName) has \(children.count) extras menu bar children")
 
             for child in children {
                 // Extract frame
@@ -270,9 +283,11 @@ final class MenuBarItemDetector: ObservableObject {
                 )
 
                 items.append(item)
+                logger.info("enumerate: found item \(appName) frame=\(String(describing: frame))")
             }
         }
 
+        logger.info("enumerate: summary apps=\(runningApps.count) withExtrasBar=\(appsWithExtrasBar) withChildren=\(appsWithChildren) totalItems=\(items.count)")
         return items
     }
 
