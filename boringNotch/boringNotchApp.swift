@@ -13,7 +13,7 @@ import Sparkle
 import SwiftUI
 
 @main
-struct TheNotchBarApp: App {
+struct DynamicNotchApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Default(.menubarIcon) var showMenuBarIcon
     @Environment(\.openWindow) var openWindow
@@ -29,7 +29,7 @@ struct TheNotchBarApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("The Notch Bar", systemImage: "sparkle", isInserted: $showMenuBarIcon) {
+        MenuBarExtra("boring.notch", systemImage: "sparkle", isInserted: $showMenuBarIcon) {
             Button("Settings") {
                 DispatchQueue.main.async {
                     SettingsWindowController.shared.showWindow()
@@ -38,7 +38,7 @@ struct TheNotchBarApp: App {
             .keyboardShortcut(KeyEquivalent(","), modifiers: .command)
             CheckForUpdatesView(updater: updaterController.updater)
             Divider()
-            Button("Restart The Notch Bar") {
+            Button("Restart Boring Notch") {
                 ApplicationRelauncher.restart()
             }
             Button("Quit", role: .destructive) {
